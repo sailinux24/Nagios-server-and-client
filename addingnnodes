@@ -1,0 +1,36 @@
+Adding node to server
+[root@client etc]# pwd
+/usr/local/nagios/etc
+[root@client etc]# cat nagios.cfg | grep  servers  ### uncomment the below line and create a servers dir and add clients server in servers dir by below lines example
+cfg_dir=/usr/local/nagios/etc/servers
+
+pwd
+/usr/local/nagios/etc/servers
+cat clinet.cfg
+define host{
+               ## hostgroups      ossec_agent, ssh_3389, check_mount_nfs, mysql-servers, mysql-3307
+                use                     linux-server            ; Name of host template to use
+                host_name       master
+                address         192.168.56.104
+}
+define service {
+
+    use                     local-service           ; Name of service template to use
+    host_name               master
+    service_description     Current Load
+    check_command           check_local_load!5.0,4.0,3.0!10.0,6.0,4.0
+}
+define service {
+
+    use                     local-service           ; Name of service template to use
+    host_name               master
+    service_description     Swap Usage
+    check_command           check_local_swap!20%!10%
+}
+define service {
+
+    use                     local-service           ; Name of service template to use
+    host_name               master
+    service_description     PING
+    check_command           check_ping!100.0,20%!500.0,60%
+}
