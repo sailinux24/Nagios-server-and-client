@@ -34,3 +34,18 @@ define service {
     service_description     PING
     check_command           check_ping!100.0,20%!500.0,60%
 }
+############################################
+
+On server end commands
+
+/usr/local/nagios/libexec/check_ssh -H 192.168.56.104
+SSH OK - OpenSSH_7.4 (protocol 2.0) | time=0.007088s;;;0.000000;10.000000
+
+/usr/local/nagios/libexec/check_http -H 192.168.56.104
+connect to address 192.168.56.104 and port 80: Connection refused
+HTTP CRITICAL - Unable to open TCP socket
+[root@client servers]#
+
+###########
+
+
