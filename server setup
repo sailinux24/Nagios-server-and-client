@@ -1,0 +1,68 @@
+ Nagios master installations
+Su – root
+Pass:redhat
+
+Step 1: Install Required Dependencies
+[root@ip-100-0-0-27 ~]#   yum install -y httpd httpd-tools php gcc glibc glibc-common gd gd-devel make net-snmp
+Step 2: Create Nagios User and Group
+[root@ip-100-0-0-27 ~]#   useradd nagios
+[root@ip-100-0-0-27 ~]#   groupadd nagcmd
+[root@ip-100-0-0-27 ~]#    usermod -G nagcmd nagios
+[root@ip-100-0-0-27 ~]#   usermod -G nagcmd apache
+
+Step 3: Download Nagios Core 4.4.5 and Nagios Plugin 2.2.1
+[root@ip-100-0-0-27 ~]#   mkdir /root/nagios
+[root@ip-100-0-0-27 ~]# cd /root/nagios
+[root@ip-100-0-] #  wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.5.tar.gz
+[root@ip-100-0-0-27 ~]#   wget https://nagios-plugins.org/download/nagios-plugins-2.2.1.tar.gz
+Step 4: Extract Nagios Core and its Plugins
+[root@ip-100-0-0-27 ~]#   tar -xvf nagios-4.4.5.tar.gz
+[root@ip-100-0-0-27 ~]#   tar -xvf nagios-plugins-2.2.1.tar.gz
+
+[root@ip-100-0-0-27 nagios]#   ls -l
+total 27424
+drwxrwxr-x 20 root root     4096 Apr 17 09:47 nagios-4.4.5
+-rw-r--r--  1 root root 11304463 Aug 20  2019 nagios-4.4.5.tar.gz
+-rw-r--r--  1 root root 11304463 Aug 20  2019 nagios-4.4.5.tar.gz.1
+drwxr-xr-x 15 root root     4096 Apr 17 09:50 nagios-plugins-2.2.1
+-rw-r--r--  1 root root  2728818 Apr 19  2017 nagios-plugins-2.2.1.tar.gz
+-rw-r--r--  1 root root  2728818 Apr 19  2017 nagios-plugins-2.2.1.tar.gz.1
+
+Configure Nagios Core
+[root@ip-100-0-0-27 ~]#   cd nagios-4.4.5
+[root@ip- nagios-4.4.~]#    ./configure --with-command-group=nagcmd
+[root@ip-100-0-0-27 nagios-4.4.5]#   make all
+[root@ip-100-0-0-27 nagios-4.4.5]#   make install
+[root@ip-100-0-0-27 nagios-4.4.5]#   make install-init
+[root@ip-100-0-0-27 nagios-4.4.5]# make install-commandmode
+[root@ip-100-0-0-27 nagios-4.4.5]# make install-config
+
+Step 5: Install and Configure Web Interface for Nagios
+[root@ip-100-0-0-27 nagios-4.4.5]#   make install-webconf
+[root@ip-100-0-0-27 nagios-4.4.5]#   htpasswd -s -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+New password: redhat
+Re-entered password :redhat
+[root@ip-100-0-0-27 nagios-4.4.5]#   systemctl start httpd.service
+Step 6: Compile and Install Nagios Plugin
+
+[root@ip-100-0-0-27 ~]#   cd /root/nagios
+[root@ip-1nagios ~]#  cd nagios-plugins-2.2.1/
+[root@ip00-0-0-27 nagios-plugins-2.2.1]#    ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+[root@ip-100-0-0-27 nagios-plugins-2.2.1]#   make
+[root@ip-100-0-0-27 nagios-plugins-2.2.1]#   make install
+
+Step 7: Verify Nagios Configuration Files
+[root@ip-100-0-0-27 nagios-plugins-2.2.1]#     /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+Step 8: Add Nagios Services to System Startup
+[root@ip-100-0-0-27 ~]#   systemctl enable nagios
+[root@ip-100-0-0-27 ~]#   systemctl enable httpd
+[root@ip-100-0-0-27 ~]#   service nagios start
+[root@ip-100-0-0-27 ~]#   systemctl start nagios.service
+
+Step 10: Login to the Nagios Web Interface
+Search on browser 
+
+3.10.211.131/nagios
+Promting 
+Username: nagiosadmin
+Password: redhat
