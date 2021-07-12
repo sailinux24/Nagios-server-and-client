@@ -4,11 +4,13 @@ yum install nagios-plugins* -y
 
 yum install epel-release
 yum install nrpe
-
+/etc/nagios/nrpe.cfg
 allow-host= serverip
 
+systemctl restart nrpe
+
 Adding node to server
-[root@client etc]# pwd
+[root@server etc]# pwd
 /usr/local/nagios/etc
 [root@client etc]# cat nagios.cfg | grep  servers  ### uncomment the below line and create a servers dir and add clients server in servers dir by below lines example
 cfg_dir=/usr/local/nagios/etc/servers
@@ -19,7 +21,7 @@ cat clinet.cfg
 define host{
                ## hostgroups      ossec_agent, ssh_3389, check_mount_nfs, mysql-servers, mysql-3307
                 use                     linux-server            ; Name of host template to use
-                host_name       master
+                host_name       clinemachine
                 address         192.168.56.104
 }
 define service {
@@ -44,6 +46,9 @@ define service {
     check_command           check_ping!100.0,20%!500.0,60%
 }
 ############################################
+#/usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+
+service reload nagios
 
 On server end commands
 
